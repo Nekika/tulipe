@@ -3,6 +3,7 @@ defmodule Tulipe do
 
   def start(_type, _args) do
     children = [
+      {Tulipe.Server, %{}},
       {Task, fn -> Tulipe.Listener.start(9898) end}
     ]
 
