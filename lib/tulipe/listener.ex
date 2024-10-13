@@ -13,7 +13,7 @@ defmodule Tulipe.Listener do
   defp accept_forever(listener) do
     with {:ok, socket} <- :gen_tcp.accept(listener) do
       Logger.info("Accepted new connection")
-      serve_forever(socket)
+      Task.start(fn -> serve_forever(socket) end)
       accept_forever(listener)
     end
   end
