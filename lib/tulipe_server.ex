@@ -19,10 +19,29 @@ defmodule TulipeServer do
   end
 
   defp serve_forever(socket) do
-    with {:ok, packet} <- :gen_tcp.recv(socket, 0),
-         {:ok, command} <- TulipeServer.Command.parse(packet),
-         do: TulipeServer.Command.run(command)
+    result =
+      with {:ok, packet} <- :gen_tcp.recv(socket, 0),
+           {:ok, command} <- TulipeServer.Command.parse(packet),
+           do: TulipeServer.Command.run(command)
+
+    send_result(result, socket)
 
     serve_forever(socket)
+  end
+
+  defp send_result({:ok, result}, socket) do
+    send_message(result, socket)
+  end
+
+  defp send_result({:error, :unknown_command}, socket) do
+    send_message("UNKNOWN COMMAND", socket)
+  end
+
+  defp send_result({:error, :unsupported_event}, socket) do
+    send_message("UNSUPPORTED EVENT", socket)
+  end
+
+  defp send_message(message, socket) do
+    :gen_tcp.send(socket, message <> "\r\n")
   end
 end

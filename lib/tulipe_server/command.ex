@@ -15,10 +15,12 @@ defmodule TulipeServer.Command do
   end
 
   def run({:list, type}) do
-    Tulipe.Tracker.list(Tracking, type)
+    list = Tulipe.Tracker.list(Tracking, type)
+    {:ok, JSON.encode!(list)}
   end
 
   def run({:report, type}) do
     Tulipe.Tracker.report(Tracking, type)
+    {:ok, "OK"}
   end
 end
