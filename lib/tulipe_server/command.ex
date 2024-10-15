@@ -13,4 +13,12 @@ defmodule TulipeServer.Command do
       {:ok, {command, type}}
     end
   end
+
+  def run({:list, type}) do
+    Tulipe.Tracker.list(Tracking, type)
+  end
+
+  def run({:report, type}) do
+    Tulipe.Tracker.report(Tracking, type)
+  end
 end
