@@ -1,4 +1,4 @@
-defmodule Tulipe.Server do
+defmodule Tulipe.Tracker do
   use GenServer
 
   @default_config %{
@@ -7,7 +7,7 @@ defmodule Tulipe.Server do
   }
 
   def start_link(config \\ %{}) when is_map(config) do
-    GenServer.start_link(__MODULE__, Map.merge(@default_config, config), name: S)
+    GenServer.start_link(__MODULE__, Map.merge(@default_config, config), name: Tracking)
   end
 
   def list(pid) do

@@ -1,4 +1,4 @@
-defmodule Tulipe.Listener do
+defmodule TulipeServer do
   require Logger
 
   def start(port) do
@@ -20,14 +20,14 @@ defmodule Tulipe.Listener do
 
   defp serve_forever(socket) do
     with {:ok, packet} <- :gen_tcp.recv(socket, 0),
-         {:ok, command} <- Tulipe.Command.parse(packet) do
+         {:ok, command} <- TulipeServer.Command.parse(packet) do
       case command do
         {:list, event} ->
-          list = Tulipe.Server.list(S, event)
+          list = Tulipe.Tracker.list(Tracking, event)
           :gen_tcp.send(socket, inspect(list) <> "\n")
 
         {:report, event} ->
-          Tulipe.Server.report(S, event)
+          Tulipe.Tracker.report(Tracking, event)
       end
 
       serve_forever(socket)

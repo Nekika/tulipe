@@ -1,4 +1,4 @@
-defmodule Tulipe.Command do
+defmodule TulipeServer.Command do
   def parse(raw) when is_binary(raw) do
     case String.split(raw) do
       ["LIST"] -> {:ok, {:list, :all}}
