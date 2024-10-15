@@ -22,8 +22,8 @@ defmodule Tulipe.Listener do
     with {:ok, packet} <- :gen_tcp.recv(socket, 0),
          {:ok, command} <- Tulipe.Command.parse(packet) do
       case command do
-        {:list, target} ->
-          list = Tulipe.Server.list(S, target)
+        {:list, event} ->
+          list = Tulipe.Server.list(S, event)
           :gen_tcp.send(socket, inspect(list) <> "\n")
 
         {:report, event} ->

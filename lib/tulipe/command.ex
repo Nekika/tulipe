@@ -1,25 +1,16 @@
 defmodule Tulipe.Command do
-  alias Tulipe.Event
-
-  defp do_parse("LIST") do
-    {:ok, {:list, :all}}
-  end
-
-  defp do_parse("LIST:" <> event) do
-    with {:ok, event} <- Event.parse(event) do
-      {:ok, {:list, event}}
+  def parse(raw) when is_binary(raw) do
+    case String.split(raw) do
+      ["LIST"] -> {:ok, {:list, :all}}
+      ["LIST", raw_event] -> parse_with_event(:list, raw_event)
+      ["REPORT", raw_event] -> parse_with_event(:report, raw_event)
+      _ -> {:error, :unknown_command}
     end
   end
 
-  defp do_parse("REPORT:" <> event) do
-    with {:ok, event} <- Event.parse(event) do
-      {:ok, {:report, event}}
+  defp parse_with_event(command, raw_event) do
+    with {:ok, event} <- Tulipe.Event.parse(raw_event) do
+      {:ok, {command, event}}
     end
-  end
-
-  def parse(from) when is_binary(from) do
-    from
-    |> String.trim()
-    |> do_parse()
   end
 end
