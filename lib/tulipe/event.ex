@@ -1,9 +1,17 @@
 defmodule Tulipe.Event do
-  def parse(raw) do
-    case String.trim(raw) do
-      "VimEnter" -> {:ok, :vim_enter}
-      "VimLeave" -> {:ok, :vim_leave}
-      _ -> {:error, :unsupported_event}
+  defstruct(
+    datetime: nil,
+    type: nil
+  )
+
+  def new(type) do
+    with {:ok, now} <- DateTime.now("Etc/UTC") do
+      {:ok, %Tulipe.Event{datetime: now, type: type}}
     end
+  end
+
+  def new!(type) do
+    {:ok, event} = new(type)
+    event
   end
 end
