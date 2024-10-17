@@ -1,6 +1,28 @@
 defmodule TulipeServer.Command do
-  def parse(raw) when is_binary(raw) do
-    case String.split(raw) do
+  @doc ~S"""
+  Parses `line` into a command.
+
+  ## Examples
+
+    iex> TulipeServer.Command.parse "LIST\r\n"
+    {:ok, {:list, :all}}
+
+    iex> TulipeServer.Command.parse "LIST VimEnter"
+    {:ok, {:list, :vim_enter}}
+
+    iex> TulipeServer.Command.parse "REPORT VimLeave"
+    {:ok, {:report, :vim_leave}}
+
+  Unknown commands or unsupported events lead to an error:
+
+    iex> TulipeServer.Command.parse "MAKE VimEnter"
+    {:error, :unknown_command}
+
+    iex> TulipeServer.Command.parse "REPORT VimQuit"
+    {:error, :unsupported_event}
+  """
+  def parse(line) when is_binary(line) do
+    case String.split(line) do
       ["LIST"] -> {:ok, {:list, :all}}
       ["LIST", raw_type] -> parse_with_event(:list, raw_type)
       ["REPORT", raw_type] -> parse_with_event(:report, raw_type)
@@ -13,6 +35,11 @@ defmodule TulipeServer.Command do
       {:ok, {command, type}}
     end
   end
+
+  @doc """
+  Runs `command`.
+  """
+  def run(command)
 
   def run({:list, type}) do
     list = Tulipe.Tracker.list(Tracking, type)
