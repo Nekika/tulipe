@@ -1,8 +1,10 @@
 defmodule Tulipe.Tracker do
   use Agent
 
-  def start_link(events \\ []) do
-    Agent.start_link(fn -> events end, name: Tracking)
+  def start_link(options \\ []) do
+    events = Keyword.get(options, :events, [])
+    name = Keyword.get(options, :name, Tracking)
+    Agent.start_link(fn -> events end, name: name)
   end
 
   def list(tracker, :all) do

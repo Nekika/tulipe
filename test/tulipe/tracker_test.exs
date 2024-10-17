@@ -2,7 +2,7 @@ defmodule Tulipe.TrackerTest do
   use ExUnit.Case, async: true
 
   setup do
-    tracker = start_supervised!(Tulipe.Tracker)
+    tracker = start_supervised!({Tulipe.Tracker, name: TrackingTest})
     %{tracker: tracker}
   end
 
