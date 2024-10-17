@@ -20,13 +20,20 @@ defmodule TulipeServer do
 
   defp serve_forever(socket) do
     result =
-      with {:ok, packet} <- :gen_tcp.recv(socket, 0),
+      with {:ok, packet} <- recv(socket),
            {:ok, command} <- TulipeServer.Command.parse(packet),
            do: TulipeServer.Command.run(command)
 
     send_result(result, socket)
 
     serve_forever(socket)
+  end
+
+  defp recv(socket) do
+    with {:ok, packet} <- :gen_tcp.recv(socket, 0) do
+      Logger.info("Received packet from #{inspect(socket)}: #{inspect(packet)}")
+      {:ok, packet}
+    end
   end
 
   defp send_result({:ok, result}, socket) do
