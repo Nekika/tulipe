@@ -43,7 +43,7 @@ defmodule TulipeServer.Command do
 
   def run({:list, type}) do
     list = Tulipe.Tracker.list(Tracking, type)
-    {:ok, JSON.encode!(list)}
+    {:ok, Jason.encode!(list)}
   end
 
   def run({:report, type}) do
