@@ -7,20 +7,16 @@ defmodule Tulipe.Tracker do
     Agent.start_link(fn -> events end, name: name)
   end
 
-  def list(tracker, :all) do
-    Agent.get(tracker, fn events -> events end)
+  def list(tracker, options \\ []) do
+    events = Agent.get(tracker, fn events -> events end)
+
+    case Keyword.get(options, :types, []) do
+      [] -> events
+      types -> Enum.filter(events, fn event -> Enum.member?(types, event.type) end)
+    end
   end
 
-  def list(tracker, type) do
-    Agent.get(tracker, fn events ->
-      Enum.filter(events, fn %{type: t} -> t == type end)
-    end)
-  end
-
-  def report(tracker, type) do
-    Agent.update(tracker, fn events ->
-      event = Tulipe.Event.new!(type)
-      [event | events]
-    end)
+  def report(tracker, event) do
+    Agent.update(tracker, fn events -> [event | events] end)
   end
 end

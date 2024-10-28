@@ -1,22 +1,22 @@
 defmodule Tulipe.TrackerTest do
   use ExUnit.Case, async: true
 
+  alias Tulipe.Tracker
+
   setup do
-    tracker = start_supervised!({Tulipe.Tracker, name: TrackingTest})
+    tracker = start_supervised!({Tracker, name: TrackingTest})
     %{tracker: tracker}
   end
 
   test "track events", %{tracker: tracker} do
-    assert Tulipe.Tracker.list(tracker, :all) == []
+    event = %{type: "VimEnter", datetime: DateTime.now!("Etc/UTC")}
 
-    Tulipe.Tracker.report(tracker, :vim_enter)
+    assert :ok = Tracker.report(tracker, event)
 
-    [event] = Tulipe.Tracker.list(tracker, :all)
-    assert event.type == :vim_enter
+    assert [^event] = Tracker.list(tracker)
 
-    [event] = Tulipe.Tracker.list(tracker, :vim_enter)
-    assert event.type == :vim_enter
+    assert [] = Tracker.list(tracker, types: ["VimLeave"])
 
-    assert Tulipe.Tracker.list(tracker, :vim_leave) == []
+    assert [^event] = Tracker.list(tracker, types: ["VimEnter"])
   end
 end
