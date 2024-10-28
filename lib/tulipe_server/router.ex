@@ -36,6 +36,14 @@ defmodule TulipeServer.Router do
     send_resp(conn, status, Jason.encode!(data))
   end
 
+  get "events/stream" do
+    filter = Map.get(conn.assigns, :event_filter, [])
+
+    conn
+    |> WebSockAdapter.upgrade(TulipeServer.WebSock, [filter: filter], [])
+    |> halt()
+  end
+
   match _ do
     send_resp(conn, 404, "Not Found")
   end
