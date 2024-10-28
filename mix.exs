@@ -21,6 +21,7 @@ defmodule Tulipe.MixProject do
   defp deps do
     [
       {:bandit, "~> 1.0"},
+      {:cors_plug, "~> 3.0"},
       {:jason, "~> 1.0"},
       {:plug, "~> 1.16"},
       {:websock, "~> 0.5"},

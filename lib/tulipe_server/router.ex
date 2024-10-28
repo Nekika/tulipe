@@ -5,6 +5,8 @@ defmodule TulipeServer.Router do
 
   plug(:match)
 
+  plug(CORSPlug)
+
   plug(Plug.Parsers,
     parsers: [:urlencoded, :json],
     json_decoder: Jason
