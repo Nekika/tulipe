@@ -3,6 +3,7 @@ defmodule Tulipe do
 
   def start(_type, _args) do
     children = [
+      Tulipe.Dispatcher,
       Tulipe.Tracker,
       TulipeServer
     ]

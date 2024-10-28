@@ -17,6 +17,7 @@ defmodule Tulipe.Tracker do
   end
 
   def report(tracker, event) do
+    Tulipe.Dispatcher.dispatch(event)
     Agent.update(tracker, fn events -> [event | events] end)
   end
 end
